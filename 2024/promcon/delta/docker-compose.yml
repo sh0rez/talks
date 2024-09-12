@@ -1,0 +1,17 @@
+services:
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.108.0
+    volumes:
+      - ./otelcol.yml:/etc/otelcol-contrib/config.yaml
+    ports: [4318:4318]
+
+  prometheus:
+    image: prom/prometheus:v3.0.0-beta.0
+    ports: ["9090:9090"]
+    volumes:
+      - ./.state/prometheus:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-remote-write-receiver
+    user: 0:0
